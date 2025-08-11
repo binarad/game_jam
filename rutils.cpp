@@ -1,7 +1,8 @@
 // rutils.cpp
 // Version: 25-05-25
 
-#include "raylib.h"
+#include <raylib.h>
+#include <raymath.h>
 #include <cmath>
 #include <cassert>
 #include <cstdlib>
@@ -152,15 +153,15 @@ Rectangle panel_next_child(const Panel &panel, Iterator &it) {
 
 // ==================== RECT HELPERS ====================
 
-Vector2 rect_calc_center(const Rectangle &rect) {
+Vector2 rect_calc_center(Rectangle rect) {
     return {rect.x + rect.width / 2.0f, rect.y + rect.height / 2.0f};
 }
 
-Vector2 rect_get_pos(const Rectangle &rect) {
+Vector2 rect_get_pos(Rectangle rect) {
     return {rect.x, rect.y};
 }
 
-Vector4 rect_to_vec4(const Rectangle &rect) {
+Vector4 rect_to_vec4(Rectangle rect) {
     return {rect.x, rect.y, rect.width, rect.height};
 }
 
@@ -168,21 +169,34 @@ Rectangle rect_with_center_pos(Vector2 center_pos, float width, float height) {
     return {center_pos.x - width / 2.0f, center_pos.y - height / 2.0f, width, height};
 }
 
-Rectangle vec4_to_rect(const Vector4 &vec) {
+Rectangle vec4_to_rect(const Vector4 vec) {
     return {vec.x, vec.y, vec.z, vec.w};
 }
 
 void rect_move_towards_pos(Rectangle &rect, Vector2 target_pos, float px_per_sec, float frame_time) {
     float step = px_per_sec * frame_time;
-    Vector2 diff = {target_pos.x - (rect.x + rect.width / 2.0f), target_pos.y - (rect.y + rect.height / 2.0f)};
-    float len = sqrtf(diff.x * diff.x + diff.y * diff.y);
-    if (len != 0) {
-        diff.x /= len;
-        diff.y /= len;
-    }
-    rect.x += diff.x * step;
-    rect.y += diff.y * step;
+    auto rect_center = rect_calc_center(rect);
+    Vector2 diff = {target_pos.x - rect_center.x, target_pos.y - rect_center.y};
+    Vector2 diff_norm = Vector2Normalize(diff);
+    Vector2 move_offset = {diff_norm.x * step, diff_norm.y * step};
+    rect.x += move_offset.x;
+    rect.y += move_offset.y;
 }
+
+// rect_move_towards_pos :: proc(
+// 	rect: ^rl.Rectangle,
+// 	target_pos: rl.Vector2,
+// 	px_per_sec: f32,
+// 	frame_time: f32,
+// ) {
+// 	step := px_per_sec * frame_time
+// 	diff := target_pos - rect_calc_center(rect^)
+// 	diff_norm := rl.Vector2Normalize(diff)
+// 	move_offset := rl.Vector2{diff_norm.x * step, diff_norm.y * step}
+
+// 	rect.x += move_offset.x
+// 	rect.y += move_offset.y
+// }
 
 // ==================== WINDOW ====================
 

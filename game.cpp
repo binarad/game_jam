@@ -2,19 +2,37 @@
 #include <raylib.h>
 #include "rutils.h"
 #include "gui/gui.h"
+#include "pallete.h"
+#include "enemies.h"
+
+
+void flower_draw() 
+{
+	DrawCircleV(wr_vec2({50, 50}), wr_x(4), COLOR_YELLOW);
+}
+
 
 int main()
 {
 	window_init();
 	gui_init();
 
+	EnemiesManager enemies_manager;
+	enemies_manager.start_spawning();
+
 	while (!WindowShouldClose())
 	{
-		BeginDrawing();
-		ClearBackground(BLACK);
+		// UPDATE
+		enemies_manager.update();
 
-		auto a = text_init("Hello world", FontSize::Medium, RED, wr_vec2({30, 50}));
-		text_draw(a);
+		// DRAW
+		BeginDrawing();
+		ClearBackground(COLOR_GREEN);
+
+		flower_draw();
+		enemies_manager.draw();
+
+		draw_fps();
 
 		EndDrawing();
 	}	 
@@ -24,3 +42,4 @@ int main()
 
 	return 0;
 }
+

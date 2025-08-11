@@ -56,8 +56,8 @@ Rectangle panel_next_child(const Panel &panel, Iterator &it);
 
 // ==================== RECT HELPERS ====================
 
-Vector2 rect_calc_center(const Rectangle &rect);
-Vector2 rect_get_pos(const Rectangle &rect);
+Vector2 rect_calc_center(Rectangle rect);
+Vector2 rect_get_pos(Rectangle rect);
 Rectangle rect_with_center_pos(Vector2 center_pos, float width, float height);
 void rect_move_towards_pos(Rectangle &rect, Vector2 target_pos, float px_per_sec, float frame_time);
 
