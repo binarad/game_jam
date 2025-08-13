@@ -3,6 +3,7 @@
 #include "rutils.h"
 #include "pallete.h"
 #include "enemies.h"
+#include "sprite_sheet.h"
 
 
 const float ENEMIES_MOVE_SPEED = wr_y(2);
