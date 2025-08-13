@@ -5,6 +5,7 @@
     "*.vue": "vue",
     "string": "cpp",
     "vector": "cpp",
-    "ios": "cpp"
+    "ios": "cpp",
+    "xutility": "cpp"
   }
 }

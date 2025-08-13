@@ -45,6 +45,7 @@ void EnemiesManager::draw(SpriteSheet &enemy_sprite)
 {
     for (auto enemy_rect : m_list)
     {
+        // TODO: what is x, y 50 ?
         if (enemy_rect.x > wr_x(50))
             enemy_sprite.draw_flipped(0, enemy_rect, WHITE, true, false);
 
@@ -58,7 +59,9 @@ void EnemiesManager::check_mouse_click(Vector2 mouse_pos)
 {
     for (size_t index = 0; index < m_list.size(); index++)
     {
-        if (CheckCollisionPointRec(mouse_pos, m_list[index]) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        if (CheckCollisionCircleRec(mouse_pos, EXPLOSION_RADIUS, m_list[index]))
+        {
             m_list.erase(m_list.begin() + index);
+        }
     }
 }
