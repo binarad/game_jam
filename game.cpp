@@ -5,11 +5,10 @@
 #include "button.h"
 
 #include "pallete.h"
-#include "enemies.h"
+#include "enemies_manager.h"
 #include "sprite_sheet.h"
 
-
-void flower_draw(SpriteSheet &flower_sprite_sheet) 
+void flower_draw(SpriteSheet &flower_sprite_sheet)
 {
 	flower_sprite_sheet.draw(4, wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20), WHITE);
 }
@@ -29,7 +28,11 @@ int main()
 
 	SpriteSheet flower_sprite_sheet;
 	flower_sprite_sheet.load("assets/flower_sprite_sheet.png", 16);
-	
+	float flower_hp = 500;
+
+	SpriteSheet enemy_sprite;
+	enemy_sprite.load("assets/enemy-1.png", 16);
+
 	// ---------------------------------------
 	bool close_window = false;
 	// Button play_button(Rectangle{50.0f, 50.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
@@ -51,16 +54,18 @@ int main()
 		ClearBackground(COLOR_GREEN);
 
 		flower_draw(flower_sprite_sheet);
-		enemies_manager.draw();
+		enemies_manager.check_mouse_click(GetMousePosition());
+		enemies_manager.draw(enemy_sprite);
 
+		DrawRectangle(wr_x(4.8f), wr_y(4.5f), wr_x(12.5f), wr_y(3), COLOR_YELLOW);
+		DrawRectangle(wr_x(5), wr_y(5), wr_x(12), wr_y(2), COLOR_GREEN);
+		DrawRectangle(wr_x(5), wr_y(8.5), wr_x(12), wr_y(2), COLOR_YELLOW);
 		// FLOWER DRAW
 		// DrawTextureRec(flower_texture, source_rec, position_V, WHITE);
 		// DrawTexturePro(flower_texture, source_rec, wr_rect({20, 20, 10, 10}), )
 		// CIRCLE DRAW WITH CENTER IN MOUSE POS
 		DrawCircleLines(GetMouseX(), GetMouseY(), 50.0f, COLOR_YELLOW);
-		//TODO Make a Enemy class
-		// if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionCircleRec(GetMousePosition(), 50.0f,))
-        
+		// TODO Make a Enemy class
 
 		draw_fps();
 
