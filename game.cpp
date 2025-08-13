@@ -2,6 +2,8 @@
 #include <raylib.h>
 #include "rutils.h"
 #include "gui/gui.h"
+#include "button.h"
+
 #include "pallete.h"
 #include "enemies.h"
 #include "sprite_sheet.h"
@@ -11,7 +13,6 @@ void flower_draw(SpriteSheet &flower_sprite_sheet)
 {
 	flower_sprite_sheet.draw(4, wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20), WHITE);
 }
-
 
 int main()
 {
@@ -30,12 +31,22 @@ int main()
 	flower_sprite_sheet.load("assets/flower_sprite_sheet.png", 16);
 	
 	// ---------------------------------------
-	while (!WindowShouldClose())
-	{
-		// UPDATE
-		enemies_manager.update();
+	bool close_window = false;
+	// Button play_button(Rectangle{50.0f, 50.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
 
-		// DRAW
+	while (!WindowShouldClose() && !close_window)
+	{
+		// if (play_button.Hover(GetMousePosition()))
+		// {
+		// 	play_button.color = COLOR_GREEN;
+		// 	play_button.label_color = COLOR_YELLOW;
+		// }
+		// else
+		// {
+		// 	play_button.color = COLOR_YELLOW;
+		// 	play_button.label_color = COLOR_GREEN;
+		// }
+		enemies_manager.update();
 		BeginDrawing();
 		ClearBackground(COLOR_GREEN);
 
@@ -54,11 +65,10 @@ int main()
 		draw_fps();
 
 		EndDrawing();
-	}	 
+	}
 
 	gui_deinit();
 	window_deinit();
 
 	return 0;
 }
-
