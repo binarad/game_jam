@@ -77,7 +77,12 @@ void draw_fps();
 // WR - window related
 
 float wr_x(float percent);
+
 float wr_y(float percent);
+
+// Convert percent of height into percent of width
+float wr_x_from_y(float percent);
+
 Vector2 wr_vec2(Vector2 vec);
 Rectangle wr_rect(Rectangle rect);
 Rectangle wr_rect_with_center_pos(Vector2 related_center_pos, float related_width, float related_height);

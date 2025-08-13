@@ -221,23 +221,28 @@ constexpr int TARGET_FPS = 400;
 
 // ==================== WR HELPERS ====================
 
- float wr_x(float percent) {
+float wr_x(float percent) {
     return WINDOW_WIDTH / 100.0f * percent;
 }
 
- float wr_y(float percent) {
+float wr_y(float percent) {
     return WINDOW_HEIGHT / 100.0f * percent;
 }
 
- Vector2 wr_vec2(Vector2 vec) {
+
+float wr_x_from_y(float percent) {
+    return percent * (WINDOW_HEIGHT / WINDOW_WIDTH);
+}
+
+Vector2 wr_vec2(Vector2 vec) {
     return {wr_x(vec.x), wr_y(vec.y)};
 }
 
- Rectangle wr_rect(Rectangle rect) {
+Rectangle wr_rect(Rectangle rect) {
     return {wr_x(rect.x), wr_y(rect.y), wr_x(rect.width), wr_y(rect.height)};
 }
 
- Rectangle wr_rect_with_center_pos(Vector2 related_center_pos, float related_width, float related_height) {
+Rectangle wr_rect_with_center_pos(Vector2 related_center_pos, float related_width, float related_height) {
     return {
         wr_x(related_center_pos.x) - wr_x(related_width) / 2.0f,
         wr_y(related_center_pos.y) - wr_y(related_height) / 2.0f,

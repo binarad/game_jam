@@ -1,6 +1,10 @@
 {
   "files.associations": {
+    "*.page-template": "vue",
+    "*.layout-template": "vue",
+    "*.vue": "vue",
     "string": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "ios": "cpp"
   }
 }
