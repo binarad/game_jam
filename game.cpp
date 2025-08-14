@@ -9,7 +9,7 @@
 #include "enemies_manager.h"
 #include "sprite_sheet.h"
 
-
+#include "flower.h"
 const float PLAYER_HP_MAX = 100;
 const float PLAYER_ENERGY_MAX = 100;
 const float PLAYER_ENERGY_COST = 10;
@@ -22,23 +22,22 @@ struct GameState
 	Timer player_energy_timer;
 };
 
-void flower_draw(SpriteSheet &flower_sprite_sheet)
-{
-	flower_sprite_sheet.draw(1, wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20), WHITE);
-}
+// void flower_draw(SpriteSheet &flower_sprite_sheet)
+// {
+// 	flower_sprite_sheet.draw(1, wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20), WHITE);
+// }
 
+// void hp_energy_draw(GameState &game_state)
+// {
+// 	// hp border
+// 	DrawRectangle(wr_x(4.8f), wr_y(4.5f), wr_x(12.5f), wr_y(3), COLOR_YELLOW);
+// 	// hp inner
+// 	DrawRectangle(wr_x(5), wr_y(5), wr_x(12), wr_y(2), COLOR_GREEN);
 
-void hp_energy_draw(GameState &game_state)
-{
-	// hp border
-	DrawRectangle(wr_x(4.8f), wr_y(4.5f), wr_x(12.5f), wr_y(3), COLOR_YELLOW);
-	// hp inner
-	DrawRectangle(wr_x(5), wr_y(5), wr_x(12), wr_y(2), COLOR_GREEN);
-
-	// energy
-	float energy_amount = game_state.player_energy / PLAYER_ENERGY_MAX;
-	DrawRectangle(wr_x(5), wr_y(8.5), wr_x(12) * energy_amount, wr_y(2), COLOR_YELLOW);
-}
+// 	// energy
+// 	float energy_amount = game_state.player_energy / PLAYER_ENERGY_MAX;
+// 	DrawRectangle(wr_x(5), wr_y(8.5), wr_x(12) * energy_amount, wr_y(2), COLOR_YELLOW);
+// }
 
 int main()
 {
@@ -50,6 +49,12 @@ int main()
 	game_state.player_hp = PLAYER_HP_MAX;
 	game_state.player_energy = PLAYER_ENERGY_MAX;
 	game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
+
+	// init flower
+	Flower flower;
+	flower.set_hp(flower.MAX_HP);
+	flower.set_energy(flower.MAX_ENERGY);
+	flower.m_flower_energy_timer = timer_start(flower.ENERGY_REGEN_SPEED);
 
 	// init enemies
 	EnemiesManager enemies_manager;
@@ -68,36 +73,29 @@ int main()
 
 	while (!WindowShouldClose() && !close_window)
 	{
-		// if (play_button.Hover(GetMousePosition()))
-		// {
-		// 	play_button.color = COLOR_GREEN;
-		// 	play_button.label_color = COLOR_YELLOW;
-		// }
-		// else
-		// {
-		// 	play_button.color = COLOR_YELLOW;
-		// 	play_button.label_color = COLOR_GREEN;
-		// }
 
 		// === UPDATE ===
 		{
 			enemies_manager.update();
 
 			// regen. energy
-			timer_update(game_state.player_energy_timer, GetFrameTime());
-			if (timer_is_finished(game_state.player_energy_timer)) {
-				game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
+			flower.regen_energy();
+			// timer_update(game_state.player_energy_timer, GetFrameTime());
+			// if (timer_is_finished(game_state.player_energy_timer))
+			// {
+			// 	game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
 
-				if (game_state.player_energy < PLAYER_ENERGY_MAX) {
-					game_state.player_energy += 1;
-					// flower.regen_energy()
-				}
-			}
+			// 	if (game_state.player_energy < PLAYER_ENERGY_MAX)
+			// 	{
+			// 		game_state.player_energy += 1;
+			// 	}
+			// }
 
 			// if clicked and have energy for explosion
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && (game_state.player_energy >= PLAYER_ENERGY_COST)) {
-				game_state.player_energy -= PLAYER_ENERGY_COST;
-				// flower.spend_energy_for_explosion()
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && (flower.get_energy() >= flower.EXPLOSION_ENERGY_COST))
+			{
+				flower.decrease_energy();
+				// game_state.player_energy -= PLAYER_ENERGY_COST;
 				enemies_manager.check_mouse_click(GetMousePosition());
 			}
 		}
@@ -106,15 +104,13 @@ int main()
 		BeginDrawing();
 		ClearBackground(COLOR_GREEN);
 
-		flower_draw(flower_sprite_sheet);
-		
+		flower.flower_draw(flower_sprite_sheet);
+		// flower_draw(flower_sprite_sheet);
+
 		enemies_manager.draw(enemy_sprite);
-		
-		// TODO: move to flower
-		hp_energy_draw(game_state);
-		// FLOWER DRAW
-		// DrawTextureRec(flower_texture, source_rec, position_V, WHITE);
-		// DrawTexturePro(flower_texture, source_rec, wr_rect({20, 20, 10, 10}), )
+
+		flower.hp_energy_draw();
+		// hp_energy_draw(game_state);
 		// CIRCLE DRAW WITH CENTER IN MOUSE POS
 		DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
 		// TODO Make a Enemy class
