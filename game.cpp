@@ -90,12 +90,14 @@ int main()
 
 				if (game_state.player_energy < PLAYER_ENERGY_MAX) {
 					game_state.player_energy += 1;
+					// flower.regen_energy()
 				}
 			}
 
 			// if clicked and have energy for explosion
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && (game_state.player_energy >= PLAYER_ENERGY_COST)) {
 				game_state.player_energy -= PLAYER_ENERGY_COST;
+				// flower.spend_energy_for_explosion()
 				enemies_manager.check_mouse_click(GetMousePosition());
 			}
 		}
@@ -108,6 +110,7 @@ int main()
 		
 		enemies_manager.draw(enemy_sprite);
 		
+		// TODO: move to flower
 		hp_energy_draw(game_state);
 		// FLOWER DRAW
 		// DrawTextureRec(flower_texture, source_rec, position_V, WHITE);
