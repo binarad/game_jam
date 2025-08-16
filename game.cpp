@@ -130,7 +130,7 @@ int main()
 		enemies_manager.draw(enemy_sprite);
 
 		flower.hp_energy_draw();
-		std::cout << "FLOWER HP: " << flower.get_hp() << std::endl;
+		// std::cout << "FLOWER HP: " << flower.get_hp() << std::endl;
 		// hp_energy_draw(game_state);
 		// CIRCLE DRAW WITH CENTER IN MOUSE POS
 		DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);

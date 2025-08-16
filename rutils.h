@@ -20,6 +20,7 @@ Vector2 rand_coord_in_range(Vector2 init_pos, float min, float max);
 // ==================== TIMER ====================
 
 struct Timer {
+    float starting_value;
     float value;
 };
 
@@ -27,6 +28,7 @@ Timer timer_start(float value);
 void timer_update(Timer &timer, float frame_time);
 bool timer_is_finished(const Timer &timer);
 bool timer_is_in_progress(const Timer &timer);
+void timer_restart(Timer &timer);
 
 // ==================== ITERATOR ====================
 

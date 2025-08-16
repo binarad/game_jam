@@ -1,11 +1,12 @@
 // rutils.cpp
-// Version: 25-05-25
+// Version: 16-08-25
 
 #include <raylib.h>
 #include <raymath.h>
 #include <cmath>
 #include <cassert>
 #include <cstdlib>
+#include "rutils.h"
 
 
 // ==================== RANDOM ====================
@@ -62,52 +63,35 @@ Vector2 rand_coord_in_range(Vector2 init_pos, float min, float max) {
 
 // ==================== TIMER ====================
 
-struct Timer {
-    float value;
-};
-
- Timer timer_start(float value) {
-    return Timer{value};
+Timer timer_start(float value) {
+    return Timer{value, value};
 }
 
- void timer_update(Timer &timer, float frame_time) {
+void timer_update(Timer &timer, float frame_time) {
     if (timer.value <= 0) return;
     timer.value -= frame_time;
     if (timer.value < 0) timer.value = 0;
 }
 
- bool timer_is_finished(const Timer &timer) {
+bool timer_is_finished(const Timer &timer) {
     return timer.value <= 0;
 }
 
- bool timer_is_in_progress(const Timer &timer) {
+bool timer_is_in_progress(const Timer &timer) {
     return timer.value > 0;
+}
+
+void timer_restart(Timer &timer) {
+    timer.value = timer.starting_value;
 }
 
 // ==================== ITERATOR ====================
 
-struct Iterator {
-    int index;
-    bool done;
-};
-
- Iterator iterator_init() {
+Iterator iterator_init() {
     return {-1, false};
 }
 
 // ==================== PANEL ====================
-
-enum class PanelOrientation {
-    None,
-    Horizontal,
-    Vertical
-};
-
-struct Panel {
-    Rectangle rect;
-    int children_count;
-    PanelOrientation orientation;
-};
 
 Rectangle _panel_x_child_rect_by_index(const Panel &panel, int index) {
     float child_width = panel.rect.width / (float)panel.children_count;
@@ -199,11 +183,6 @@ void rect_move_towards_pos(Rectangle &rect, Vector2 target_pos, float px_per_sec
 // }
 
 // ==================== WINDOW ====================
-
-constexpr float WINDOW_WIDTH = 1600.0f;
-constexpr float WINDOW_HEIGHT = 900.0f;
-constexpr Vector2 WINDOW_CENTER = {WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f};
-constexpr int TARGET_FPS = 400;
 
  void window_init() {
     SetTraceLogLevel(LOG_WARNING);
