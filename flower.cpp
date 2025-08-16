@@ -29,7 +29,7 @@ int Flower::get_stage()
 
 void Flower::flower_draw(SpriteSheet &flower_sprite_sheet)
 {
-    flower_sprite_sheet.draw(1, wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20), WHITE);
+    flower_sprite_sheet.draw(1, flower_bounds, WHITE);
 }
 
 void Flower::hp_energy_draw()
@@ -37,7 +37,8 @@ void Flower::hp_energy_draw()
     // hp border
     DrawRectangle(wr_x(4.8f), wr_y(4.5f), wr_x(12.5f), wr_y(3), COLOR_YELLOW);
     // hp inner
-    DrawRectangle(wr_x(5), wr_y(5), wr_x(12), wr_y(2), COLOR_GREEN);
+    float hp_amount = m_hp / MAX_HP;
+    DrawRectangle(wr_x(5), wr_y(5), wr_x(12) * hp_amount, wr_y(2), COLOR_GREEN);
 
     // energy
     float energy_amount = m_energy / MAX_ENERGY;

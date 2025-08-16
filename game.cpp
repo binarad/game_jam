@@ -15,11 +15,22 @@ const float PLAYER_ENERGY_MAX = 100;
 const float PLAYER_ENERGY_COST = 10;
 const float PLAYER_ENERGY_REGEN_SPEED = 0.1;
 
+
+
+enum class GameStage 
+{
+	MENU,
+	GAME,
+	OPTIONS,
+	EXIT,
+};
 struct GameState
 {
-	float player_hp;
-	float player_energy;
-	Timer player_energy_timer;
+	Flower flower;
+	GameStage game_stage;
+	// float player_hp;
+	// float player_energy;
+	// Timer player_energy_timer;
 };
 
 // void flower_draw(SpriteSheet &flower_sprite_sheet)
@@ -46,9 +57,15 @@ int main()
 
 	// init game state
 	GameState game_state;
-	game_state.player_hp = PLAYER_HP_MAX;
-	game_state.player_energy = PLAYER_ENERGY_MAX;
-	game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
+	game_state.flower;
+	game_state.game_stage = GameStage::MENU;
+	// game_state.player_hp = PLAYER_HP_MAX;
+	// game_state.player_energy = PLAYER_ENERGY_MAX;
+	// game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
+
+	// ---------------------------------------------------
+	// TODO make a switch case for game_state.game_stage;
+	// ---------------------------------------------------
 
 	// init flower
 	Flower flower;
@@ -96,8 +113,11 @@ int main()
 			{
 				flower.decrease_energy();
 				// game_state.player_energy -= PLAYER_ENERGY_COST;
-				enemies_manager.check_mouse_click(GetMousePosition());
+				enemies_manager.remove_clicked_enemies(GetMousePosition());
 			}
+
+			// if enemies collides with flower, deal damage to flower?
+			enemies_manager.damage_flower(flower);
 		}
 
 		// === DRAW ===
@@ -110,6 +130,7 @@ int main()
 		enemies_manager.draw(enemy_sprite);
 
 		flower.hp_energy_draw();
+		std::cout << "FLOWER HP: " << flower.get_hp() << std::endl;
 		// hp_energy_draw(game_state);
 		// CIRCLE DRAW WITH CENTER IN MOUSE POS
 		DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
