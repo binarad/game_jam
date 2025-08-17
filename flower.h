@@ -14,7 +14,7 @@ private:
 public:
     const float MAX_HP = 100.0f;
     const float MAX_ENERGY = 100.0f;
-    const float ENERGY_REGEN_SPEED = 0.1f;
+    const float ENERGY_REGEN_SPEED = 0.03f;
     const float EXPLOSION_ENERGY_COST = 10.0f;
 
     Rectangle flower_bounds = wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20);
@@ -29,7 +29,6 @@ public:
 
     float get_energy();
     void set_energy(float energy);
-
 
     void flower_draw(SpriteSheet &sprite_sheet, int game_phase);
     void hp_energy_draw();

@@ -8,16 +8,16 @@
 #include "gui/gui.h"
 #include <iostream>
 
-const float ENEMIES_PHASE_CHANGE_TIMEOUT = 10.0;
+const float ENEMIES_PHASE_CHANGE_TIMEOUT = 5.0;
 
 // how much move speed increase on phase change
-const float ENEMIES_PHASE_MOVE_SPEED_INCREASE_MUL = 1.5;
+const float ENEMIES_PHASE_MOVE_SPEED_INCREASE_MUL = 1.035;
 // how much spawn timeout decrease on phase change
-const float ENEMIES_PHASE_SPAWN_TIMEOUT_DECREASE_MUL = 1.5;
+const float ENEMIES_PHASE_SPAWN_TIMEOUT_DECREASE_MUL = 1.13;
 
 const float ENEMIES_DEFAULT_MOVE_SPEED = wr_y(2);
 
-const float ENEMIES_DEFAULT_SPAWN_TIMEOUT = 1.0;
+const float ENEMIES_DEFAULT_SPAWN_TIMEOUT = 3.0;
 
 const float ENEMIES_SPAWN_MIN_RANGE = wr_y(35);
 const float ENEMIES_SPAWN_MAX_RANGE = wr_y(36);
@@ -58,6 +58,7 @@ void EnemiesManager::update(Flower &flower, int &game_phase, float frame_time)
         m_move_speed *= ENEMIES_PHASE_MOVE_SPEED_INCREASE_MUL;
     }
 
+    // return;
     // spawn
     // std::cout << m_spawn_timeout << std::endl;
     timer_update(m_spawn_timer, frame_time);
@@ -76,7 +77,7 @@ void EnemiesManager::update(Flower &flower, int &game_phase, float frame_time)
 
     for (Enemy &enemy : m_list)
     {
-        rect_move_towards_pos(enemy.bounds, wr_vec2({50, 50}), m_move_speed, frame_time);
+        rect_move_towards_pos(enemy.bounds, wr_vec2({50, 56}), m_move_speed, frame_time);
     }
 
     _damage_flower(flower, frame_time);
@@ -93,7 +94,7 @@ void EnemiesManager::draw_phase(int game_phase)
     text_draw(phase_text);
 }
 
-void EnemiesManager::draw(SpriteSheet &enemy_sprite)
+void EnemiesManager::draw()
 {
 
     for (Enemy enemy : m_list)

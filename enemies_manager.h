@@ -17,7 +17,7 @@ public:
     void stop();
 
     void update(Flower &flower, int &game_phase, float frame_time);
-    void draw(SpriteSheet &enemy_sprite);
+    void draw();
     void draw_phase(int game_phase);
     void remove_clicked_enemies(Vector2 mouse_pos);
     void load_enemy_textures();

@@ -13,28 +13,15 @@
 const float PLAYER_HP_MAX = 100;
 const float PLAYER_ENERGY_MAX = 100;
 const float PLAYER_ENERGY_COST = 10;
-const float PLAYER_ENERGY_REGEN_SPEED = 0.1;
+const float PLAYER_ENERGY_REGEN_SPEED = 0.5;
 
-enum class SceneType
-{
-	MENU,
-	GAME,
-	OPTIONS,
-	EXIT,
-};
 struct GameState
 {
-	// Flower flower;
-	SceneType scene_type;
 	int phase;
-	// float player_hp;
-	// float player_energy;
-	// Timer player_energy_timer;
 };
 
 void gamestate_init(GameState &game_state)
 {
-	game_state.scene_type = SceneType::GAME;
 	game_state.phase = 1;
 }
 
@@ -43,44 +30,18 @@ Timer explosion_timer;
 void explosion_draw()
 {
 	DrawRing(GetMousePosition(), EXPLOSION_RADIUS - wr_y(0.3), EXPLOSION_RADIUS, 0, 360, 100, COLOR_YELLOW);
-	// DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
 }
-
-// void flower_draw(SpriteSheet &flower_sprite_sheet)
-// {
-// 	flower_sprite_sheet.draw(1, wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20), WHITE);
-// }
-
-// void hp_energy_draw(GameState &game_state)
-// {
-// 	// hp border
-// 	DrawRectangle(wr_x(4.8f), wr_y(4.5f), wr_x(12.5f), wr_y(3), COLOR_YELLOW);
-// 	// hp inner
-// 	DrawRectangle(wr_x(5), wr_y(5), wr_x(12), wr_y(2), COLOR_GREEN);
-
-// 	// energy
-// 	float energy_amount = game_state.player_energy / PLAYER_ENERGY_MAX;
-// 	DrawRectangle(wr_x(5), wr_y(8.5), wr_x(12) * energy_amount, wr_y(2), COLOR_YELLOW);
-// }
 
 int main()
 {
 	SetConfigFlags(FLAG_FULLSCREEN_MODE | FLAG_BORDERLESS_WINDOWED_MODE);
 	window_init();
-
+	InitAudioDevice();
 	gui_init();
 
 	// init game state
 	GameState game_state;
 	gamestate_init(game_state);
-
-	// game_state.player_hp = PLAYER_HP_MAX;
-	// game_state.player_energy = PLAYER_ENERGY_MAX;
-	// game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
-
-	// ---------------------------------------------------
-	// TODO make a switch case for game_state.scene_type;
-	// ---------------------------------------------------
 
 	// init flower
 	Flower flower;
@@ -102,9 +63,21 @@ int main()
 
 	enemies_manager.load_enemy_textures();
 
+	Music backgroun_music = LoadMusicStream("assets/background_music.mp3");
+	backgroun_music.looping = true;
+	SetMusicVolume(backgroun_music, 0.35f);
+	PlayMusicStream(backgroun_music);
+
+	Sound game_over = LoadSound("assets/game_over.mp3");
+	Sound fail_trumpet = LoadSound("assets/fail-trumpet.mp3");
+
+	Sound win_sound = LoadSound("assets/win1.mp3");
+	Sound click_sound = LoadSound("assets/on_enemy_click_sound.mp3");
+
 	while (!WindowShouldClose())
 	{
 
+		UpdateMusicStream(backgroun_music);
 		// BeginDrawing();
 		// === UPDATE ===
 
@@ -131,28 +104,19 @@ int main()
 
 				// regen. energy
 				flower.regen_energy(frame_time);
-				// timer_update(game_state.player_energy_timer, GetFrameTime());
-				// if (timer_is_finished(game_state.player_energy_timer))
-				// {
-				// 	game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
-
-				// 	if (game_state.player_energy < PLAYER_ENERGY_MAX)
-				// 	{
-				// 		game_state.player_energy += 1;
-				// 	}
-				// }
 
 				// if clicked and have energy for explosion
 				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && (flower.get_energy() >= flower.EXPLOSION_ENERGY_COST))
 				{
 					flower.decrease_energy();
-					// game_state.player_energy -= PLAYER_ENERGY_COST;
+					PlaySound(click_sound);
 					enemies_manager.remove_clicked_enemies(GetMousePosition());
 				}
 
-				if (flower.get_hp() <= 0) {
-				is_died = true;
-			}
+				if (flower.get_hp() <= 0)
+				{
+					is_died = true;
+				}
 			}
 		}
 
@@ -161,16 +125,12 @@ int main()
 		ClearBackground(COLOR_GREEN);
 
 		flower.flower_draw(flower_sprite_sheet, game_state.phase);
-		// flower_draw(flower_sprite_sheet);
 
-		enemies_manager.draw(enemy_sprite);
+		enemies_manager.draw();
 
 		flower.hp_energy_draw();
-		// std::cout << "FLOWER HP: " << flower.get_hp() << std::endl;
-		// hp_energy_draw(game_state);
 		// CIRCLE DRAW WITH CENTER IN MOUSE POS
 		explosion_draw();
-		// TODO Make a Enemy class
 
 		enemies_manager.draw_phase(game_state.phase);
 
@@ -178,21 +138,30 @@ int main()
 
 		if (is_game_finished)
 		{
+			StopMusicStream(backgroun_music);
+			PlaySound(win_sound);
+			ClearBackground(COLOR_GREEN);
 			text_draw_aligned(
 				"BLOOOOOOOOM !",
 				FontSize::HUGE_SIZE,
 				COLOR_YELLOW,
 				wr_rect_with_center_pos({50, 50}, 20, 10),
-				TextAlignment::AllCenter
-			);
-		} else if (is_died) {
+				TextAlignment::AllCenter);
+		}
+		else if (is_died)
+		{
+			StopMusicStream(backgroun_music);
+			PlaySound(game_over);
+			if (!IsSoundPlaying(game_over))
+				PlaySound(fail_trumpet);
+
 			Button restart_button(
-				{50, 40, 20, 10}, 
+				{50, 40, 20, 10},
 				COLOR_GREEN,
-				COLOR_YELLOW, 
-				"Restart ?"
-			);
-			if (restart_button.mouse_click(GetMousePosition())) {
+				COLOR_YELLOW,
+				"Restart ?");
+			if (restart_button.mouse_click(GetMousePosition()))
+			{
 				is_died = false;
 
 				gamestate_init(game_state);
