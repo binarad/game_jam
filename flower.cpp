@@ -22,14 +22,9 @@ void Flower::set_hp(float hp)
     m_hp = hp;
 }
 
-int Flower::get_stage()
+void Flower::flower_draw(SpriteSheet &flower_sprite_sheet, int game_phase)
 {
-    return m_stage;
-}
-
-void Flower::flower_draw(SpriteSheet &flower_sprite_sheet)
-{
-    flower_sprite_sheet.draw(1, flower_bounds, WHITE);
+    flower_sprite_sheet.draw(game_phase / 10, flower_bounds, WHITE);
 }
 
 void Flower::hp_energy_draw()
@@ -45,9 +40,9 @@ void Flower::hp_energy_draw()
     DrawRectangle(wr_x(5), wr_y(8.5), wr_x(12) * energy_amount, wr_y(2), COLOR_YELLOW);
 }
 
-void Flower::regen_energy()
+void Flower::regen_energy(float frame_time)
 {
-    timer_update(m_flower_energy_timer, GetFrameTime());
+    timer_update(m_flower_energy_timer, frame_time);
     if (timer_is_finished(m_flower_energy_timer))
     {
         m_flower_energy_timer = timer_start(ENERGY_REGEN_SPEED);

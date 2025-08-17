@@ -5,9 +5,10 @@
 #include "enemies_manager.h"
 #include "sprite_sheet.h"
 #include "flower.h"
+#include "gui/gui.h"
 #include <iostream>
 
-const float ENEMIES_PHASE_CHANGE_TIMEOUT = 1.0;
+const float ENEMIES_PHASE_CHANGE_TIMEOUT = 10.0;
 
 // how much move speed increase on phase change
 const float ENEMIES_PHASE_MOVE_SPEED_INCREASE_MUL = 1.5;
@@ -41,9 +42,8 @@ void EnemiesManager::stop()
     // DO WE NEED THIS ?
 }
 
-void EnemiesManager::update(Flower &flower)
+void EnemiesManager::update(Flower &flower, int &game_phase, float frame_time)
 {
-    auto frame_time = GetFrameTime();
 
     // phase change
     timer_update(m_phase_change_timer, frame_time);
@@ -51,9 +51,13 @@ void EnemiesManager::update(Flower &flower)
     {
         timer_restart(m_phase_change_timer);
 
+        game_phase += 1;
+
         m_spawn_timeout /= ENEMIES_PHASE_SPAWN_TIMEOUT_DECREASE_MUL;
         m_move_speed *= ENEMIES_PHASE_MOVE_SPEED_INCREASE_MUL;
     }
+
+    return;
 
     // spawn
     // std::cout << m_spawn_timeout << std::endl;
@@ -72,7 +76,18 @@ void EnemiesManager::update(Flower &flower)
         rect_move_towards_pos(enemy_rect, wr_vec2({50, 50}), m_move_speed, frame_time);
     }
 
-    _damage_flower(flower);
+    _damage_flower(flower, frame_time);
+}
+
+void EnemiesManager::draw_phase(int game_phase)
+{
+    Text phase_text;
+    phase_text.color = COLOR_YELLOW;
+    phase_text.font_size = FontSize::Big;
+    phase_text.pos = wr_vec2({85, 5});
+    phase_text.str = "Phase: " + std::to_string(game_phase);
+
+    text_draw(phase_text);
 }
 
 void EnemiesManager::draw(SpriteSheet &enemy_sprite)
@@ -100,10 +115,10 @@ void EnemiesManager::remove_clicked_enemies(Vector2 mouse_pos)
     }
 }
 
-void EnemiesManager::_damage_flower(Flower &flower)
+void EnemiesManager::_damage_flower(Flower &flower, float frame_timer)
 {
 
-    timer_update(m_damage_timer, GetFrameTime());
+    timer_update(m_damage_timer, frame_timer);
 
     // cant attack until timer finished
     if (timer_is_in_progress(m_damage_timer)) {
