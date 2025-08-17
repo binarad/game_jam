@@ -33,6 +33,14 @@ struct GameState
 	// Timer player_energy_timer;
 };
 
+Timer explosion_timer;
+
+void explosion_draw()
+{
+	DrawRing(GetMousePosition(), EXPLOSION_RADIUS, EXPLOSION_RADIUS + wr_y(0.3), 0, 360, 100, COLOR_YELLOW);
+	// DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
+}
+
 // void flower_draw(SpriteSheet &flower_sprite_sheet)
 // {
 // 	flower_sprite_sheet.draw(1, wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20), WHITE);
@@ -133,7 +141,7 @@ int main()
 		// std::cout << "FLOWER HP: " << flower.get_hp() << std::endl;
 		// hp_energy_draw(game_state);
 		// CIRCLE DRAW WITH CENTER IN MOUSE POS
-		DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
+		explosion_draw();
 		// TODO Make a Enemy class
 
 		draw_fps();

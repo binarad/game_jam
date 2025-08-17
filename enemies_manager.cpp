@@ -7,7 +7,7 @@
 #include "flower.h"
 #include <iostream>
 
-const float ENEMIES_PHASE_CHANGE_TIMEOUT = 5.0;
+const float ENEMIES_PHASE_CHANGE_TIMEOUT = 1.0;
 
 // how much move speed increase on phase change
 const float ENEMIES_PHASE_MOVE_SPEED_INCREASE_MUL = 1.5;
@@ -16,7 +16,7 @@ const float ENEMIES_PHASE_SPAWN_TIMEOUT_DECREASE_MUL = 1.5;
 
 const float ENEMIES_DEFAULT_MOVE_SPEED = wr_y(2);
 
-const float ENEMIES_DEFAULT_SPAWN_TIMEOUT = 3.0;
+const float ENEMIES_DEFAULT_SPAWN_TIMEOUT = 1.0;
 
 const float ENEMIES_SPAWN_MIN_RANGE = wr_y(40);
 const float ENEMIES_SPAWN_MAX_RANGE = wr_y(45);
