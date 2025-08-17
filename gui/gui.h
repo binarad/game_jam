@@ -2,48 +2,49 @@
 #define _GUI_H_
 
 #include "raylib.h"
-#include "../rutils.h" 
+#include "../rutils.h"
 #include <map>
 #include <string>
 
 void gui_init();
 void gui_deinit();
 
-
-enum class FontSize {
+enum class FontSize
+{
     VerySmall,
     Small,
     Medium,
     Big,
     Bigger,
-    HUGE
+    HUGE_SIZE
 };
 
 // Debug draw all font sizes
 void fonts_debug_draw();
 
-
-enum class TextAlignment {
+enum class TextAlignment
+{
     AllCenter = 0,
-    Right     = 1,
-    Left      = 2,
-    Top       = 4,
-    Bottom    = 8
+    Right = 1,
+    Left = 2,
+    Top = 4,
+    Bottom = 8
 };
 
-inline TextAlignment operator|(TextAlignment a, TextAlignment b) {
+inline TextAlignment operator|(TextAlignment a, TextAlignment b)
+{
     return static_cast<TextAlignment>(
-        static_cast<unsigned int>(a) | static_cast<unsigned int>(b)
-    );
+        static_cast<unsigned int>(a) | static_cast<unsigned int>(b));
 }
 
-inline TextAlignment operator&(TextAlignment a, TextAlignment b) {
+inline TextAlignment operator&(TextAlignment a, TextAlignment b)
+{
     return static_cast<TextAlignment>(
-        static_cast<unsigned int>(a) & static_cast<unsigned int>(b)
-    );
+        static_cast<unsigned int>(a) & static_cast<unsigned int>(b));
 }
 
-struct Text {
+struct Text
+{
     std::string str;
     FontSize font_size;
     Color color;
@@ -62,6 +63,5 @@ Text text_init(const std::string &str, FontSize font_size, Color color, Vector2 
 // Draw text inside bounds with alignment
 void text_draw_aligned(const std::string &str, FontSize font_size, Color color,
                        const Rectangle &bounds, TextAlignment alignment);
-
 
 #endif
