@@ -11,7 +11,7 @@ const float EXPLOSION_RADIUS = wr_y(5);
 class EnemiesManager
 {
 public:
-    void start_spawning();
+    void init();
     void stop();
 
     void update(Flower &flower, int &game_phase, float frame_time);

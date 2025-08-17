@@ -2,6 +2,13 @@
 #include "rutils.h"
 #include "pallete.h"
 
+void Flower::init()
+{
+    m_hp = MAX_HP;
+	m_energy = MAX_ENERGY;
+	m_flower_energy_timer = timer_start(ENERGY_REGEN_SPEED);
+}
+
 float Flower::get_energy()
 {
     return m_energy;
@@ -20,6 +27,9 @@ float Flower::get_hp()
 void Flower::set_hp(float hp)
 {
     m_hp = hp;
+    if (m_hp < 0) {
+        m_hp = 0;
+    }
 }
 
 void Flower::flower_draw(SpriteSheet &flower_sprite_sheet, int game_phase)

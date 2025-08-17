@@ -24,13 +24,19 @@ enum class SceneType
 };
 struct GameState
 {
-	Flower flower;
+	// Flower flower;
 	SceneType scene_type;
 	int phase;
 	// float player_hp;
 	// float player_energy;
 	// Timer player_energy_timer;
 };
+
+void gamestate_init(GameState &game_state)
+{
+	game_state.scene_type = SceneType::MENU;
+	game_state.phase = 1;
+}
 
 Timer explosion_timer;
 
@@ -66,9 +72,8 @@ int main()
 
 	// init game state
 	GameState game_state;
-	game_state.flower;
-	game_state.scene_type = SceneType::MENU;
-	game_state.phase = 1;
+	gamestate_init(game_state);
+
 	// game_state.player_hp = PLAYER_HP_MAX;
 	// game_state.player_energy = PLAYER_ENERGY_MAX;
 	// game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
@@ -79,13 +84,11 @@ int main()
 
 	// init flower
 	Flower flower;
-	flower.set_hp(flower.MAX_HP);
-	flower.set_energy(flower.MAX_ENERGY);
-	flower.m_flower_energy_timer = timer_start(flower.ENERGY_REGEN_SPEED);
+	flower.init();
 
 	// init enemies
 	EnemiesManager enemies_manager;
-	enemies_manager.start_spawning();
+	enemies_manager.init();
 
 	SpriteSheet flower_sprite_sheet;
 	flower_sprite_sheet.load("assets/flower_sprite_sheet.png", 16);
@@ -96,6 +99,7 @@ int main()
 
 
 	bool is_game_finished = false;
+	bool is_died = false;
 
 	// ---------------------------------------
 	// MENU BUTTONS
@@ -110,7 +114,6 @@ int main()
 		// === UPDATE ===
 
 		// switch (game_state.scene_type)
-		{
 		// case SceneType::MENU:
 		// 	ClearBackground(COLOR_GREEN);
 		// 	menu_button_play.draw();
@@ -118,7 +121,7 @@ int main()
 
 		// case SceneType::GAME:
 
-		if (!is_game_finished) {
+		if (!is_game_finished && !is_died) {
 			auto frame_time = GetFrameTime();
 			frame_time *= 20;
 
@@ -148,9 +151,12 @@ int main()
 				// game_state.player_energy -= PLAYER_ENERGY_COST;
 				enemies_manager.remove_clicked_enemies(GetMousePosition());
 			}
+
+			if (flower.get_hp() <= 0) {
+				is_died = true;
+			}
 		}
 
-		}
 
 		// === DRAW ===
 		BeginDrawing();
@@ -180,6 +186,21 @@ int main()
 				wr_rect_with_center_pos({50, 50}, 20, 10),
 				TextAlignment::AllCenter
 			);
+		} else if (is_died) {
+			Button restart_button(
+				{50, 40, 20, 10}, 
+				COLOR_GREEN,
+				COLOR_YELLOW, 
+				"Restart ?"
+			);
+			if (restart_button.mouse_click(GetMousePosition())) {
+				is_died = false;
+
+				gamestate_init(game_state);
+				flower.init();
+				enemies_manager.init();
+			}
+			restart_button.draw();
 		}
 	
 		EndDrawing();

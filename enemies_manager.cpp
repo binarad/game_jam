@@ -25,8 +25,9 @@ const Vector2 ENEMY_SIZE = {wr_x(3), wr_x(3)};
 
 const float ENEMIES_DAMAGE_SPEED = 1.0f;
 
-void EnemiesManager::start_spawning()
+void EnemiesManager::init()
 {
+    m_list.clear();
     m_list.reserve(10240);
 
     m_spawn_timeout = ENEMIES_DEFAULT_SPAWN_TIMEOUT;
@@ -56,8 +57,6 @@ void EnemiesManager::update(Flower &flower, int &game_phase, float frame_time)
         m_spawn_timeout /= ENEMIES_PHASE_SPAWN_TIMEOUT_DECREASE_MUL;
         m_move_speed *= ENEMIES_PHASE_MOVE_SPEED_INCREASE_MUL;
     }
-
-    return;
 
     // spawn
     // std::cout << m_spawn_timeout << std::endl;

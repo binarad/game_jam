@@ -20,6 +20,9 @@ public:
     Rectangle flower_bounds = wr_rect_with_center_pos({50, 50}, wr_x_from_y(20), 20);
 
     Timer m_flower_energy_timer;
+
+    void init();
+
     // do we even need this?
     float get_hp();
     void set_hp(float hp);
