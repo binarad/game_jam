@@ -6,12 +6,13 @@ Button::Button(Rectangle btn_bounds, Color btn_color, Color text_color, const st
 {
 }
 
-void Button::Draw()
+void Button::draw()
 {
-    DrawRectangleRec(wr_rect(m_bounds), color);
-    text_draw_aligned(m_label, FontSize::Medium, label_color, wr_rect(m_bounds), TextAlignment::AllCenter);
+    // DrawRectangleRec(wr_rect(m_bounds), color);
+    DrawRectangleRec(wr_rect_with_center_pos(Vector2{m_bounds.x, m_bounds.y}, m_bounds.width, m_bounds.height), color);
+    text_draw_aligned(m_label, FontSize::Medium, label_color, wr_rect_with_center_pos(Vector2{m_bounds.x, m_bounds.y}, m_bounds.width, m_bounds.height), TextAlignment::AllCenter);
 }
-bool Button::Hover(Vector2 mouse_pos)
+bool Button::mouse_hover(Vector2 mouse_pos)
 {
     if (CheckCollisionPointRec(mouse_pos, wr_rect(m_bounds)))
     {
@@ -22,7 +23,7 @@ bool Button::Hover(Vector2 mouse_pos)
     // is_Hovered = false;
 }
 
-bool Button::Click(Vector2 mouse_pos)
+bool Button::mouse_click(Vector2 mouse_pos)
 {
     if (CheckCollisionPointRec(mouse_pos, m_bounds) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
