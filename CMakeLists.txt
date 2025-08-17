@@ -42,5 +42,7 @@ if(PLATFORM STREQUAL "Web")
         SUFFIX ".html"
         LINK_FLAGS "-s USE_GLFW=3 -s ASYNCIFY -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 -s ALLOW_MEMORY_GROWTH=1 -s EXPORTED_FUNCTIONS=['_main'] -s EXPORTED_RUNTIME_METHODS=['cwrap'] --preload-file \"${ASSETS_DIR}@/assets\" --preload-file \"${FONTS_DIR}@/fonts\""
     )
-endif()
 
+#     set(CMAKE_EXECUTABLE_SUFFIX ".html")
+#     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s FULL_ES3=1 --embed-file \"${ASSETS_DIR}\" --embed-file \"${FONTS_DIR}\"")
+endif()

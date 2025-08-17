@@ -15,11 +15,11 @@ public:
     Color color;
     Color label_color;
 
-    Button(Rectangle bouds, Color color, Color text_color, const std::string &btn_label);
+    Button(Rectangle bounds, Color color, Color text_color, const std::string &btn_label);
 
-    void Draw();
-    bool Hover(Vector2 mouse_pos);
-    bool Click(Vector2 mouse_pos);
+    void draw();
+    bool mouse_hover(Vector2 mouse_pos);
+    bool mouse_click(Vector2 mouse_pos);
 
     // ~Button();
 };

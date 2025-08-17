@@ -15,9 +15,7 @@ const float PLAYER_ENERGY_MAX = 100;
 const float PLAYER_ENERGY_COST = 10;
 const float PLAYER_ENERGY_REGEN_SPEED = 0.1;
 
-
-
-enum class GameStage 
+enum class SceneType
 {
 	MENU,
 	GAME,
@@ -27,7 +25,7 @@ enum class GameStage
 struct GameState
 {
 	Flower flower;
-	GameStage game_stage;
+	SceneType scene_type;
 	// float player_hp;
 	// float player_energy;
 	// Timer player_energy_timer;
@@ -58,13 +56,13 @@ int main()
 	// init game state
 	GameState game_state;
 	game_state.flower;
-	game_state.game_stage = GameStage::MENU;
+	game_state.scene_type = SceneType::MENU;
 	// game_state.player_hp = PLAYER_HP_MAX;
 	// game_state.player_energy = PLAYER_ENERGY_MAX;
 	// game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
 
 	// ---------------------------------------------------
-	// TODO make a switch case for game_state.game_stage;
+	// TODO make a switch case for game_state.scene_type;
 	// ---------------------------------------------------
 
 	// init flower
@@ -85,14 +83,26 @@ int main()
 	enemy_sprite.load("assets/enemy-1.png", 16);
 
 	// ---------------------------------------
-	bool close_window = false;
+	// MENU BUTTONS
+	Button menu_button_play({50.0f, 10.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
+
 	// Button play_button(Rectangle{50.0f, 50.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
 
-	while (!WindowShouldClose() && !close_window)
+	while (!WindowShouldClose())
 	{
 
+		BeginDrawing();
 		// === UPDATE ===
+
+		switch (game_state.scene_type)
 		{
+		case SceneType::MENU:
+			ClearBackground(COLOR_GREEN);
+			menu_button_play.draw();
+			break;
+
+		case SceneType::GAME:
+
 			enemies_manager.update();
 
 			// regen. energy
@@ -118,29 +128,27 @@ int main()
 
 			// if enemies collides with flower, deal damage to flower?
 			enemies_manager.damage_flower(flower);
+
+			// === DRAW ===
+			ClearBackground(COLOR_GREEN);
+
+			flower.flower_draw(flower_sprite_sheet);
+			// flower_draw(flower_sprite_sheet);
+
+			enemies_manager.draw(enemy_sprite);
+
+			flower.hp_energy_draw();
+			// std::cout << "FLOWER HP: " << flower.get_hp() << std::endl;
+			// hp_energy_draw(game_state);
+			// CIRCLE DRAW WITH CENTER IN MOUSE POS
+			DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
+			// TODO Make a Enemy class
+
+			draw_fps();
+			break;
 		}
-
-		// === DRAW ===
-		BeginDrawing();
-		ClearBackground(COLOR_GREEN);
-
-		flower.flower_draw(flower_sprite_sheet);
-		// flower_draw(flower_sprite_sheet);
-
-		enemies_manager.draw(enemy_sprite);
-
-		flower.hp_energy_draw();
-		// std::cout << "FLOWER HP: " << flower.get_hp() << std::endl;
-		// hp_energy_draw(game_state);
-		// CIRCLE DRAW WITH CENTER IN MOUSE POS
-		DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
-		// TODO Make a Enemy class
-
-		draw_fps();
-
 		EndDrawing();
 	}
-
 	gui_deinit();
 	window_deinit();
 
