@@ -14,8 +14,9 @@ public:
     void start_spawning();
     void stop();
 
-    void update(Flower &flower);
+    void update(Flower &flower, int &game_phase, float frame_time);
     void draw(SpriteSheet &enemy_sprite);
+    void draw_phase(int game_phase);
     // TODO: rename
     void remove_clicked_enemies(Vector2 mouse_pos);
 
@@ -29,5 +30,5 @@ private:
     Timer m_damage_timer;
     Timer m_phase_change_timer;
 
-    void _damage_flower(Flower &flower);
+    void _damage_flower(Flower &flower, float frame_time);
 };

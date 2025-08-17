@@ -10,7 +10,6 @@ class Flower
 private:
     float m_hp;
     float m_energy;
-    int m_stage;
 
 public:
     const float MAX_HP = 100.0f;
@@ -28,12 +27,11 @@ public:
     float get_energy();
     void set_energy(float energy);
 
-    int get_stage();
 
-    void flower_draw(SpriteSheet &sprite_sheet);
+    void flower_draw(SpriteSheet &sprite_sheet, int game_phase);
     void hp_energy_draw();
 
-    void regen_energy();
+    void regen_energy(float frame_time);
     void decrease_energy();
 };
 

@@ -26,6 +26,7 @@ struct GameState
 {
 	Flower flower;
 	SceneType scene_type;
+	int phase;
 	// float player_hp;
 	// float player_energy;
 	// Timer player_energy_timer;
@@ -67,6 +68,7 @@ int main()
 	GameState game_state;
 	game_state.flower;
 	game_state.scene_type = SceneType::MENU;
+	game_state.phase = 1;
 	// game_state.player_hp = PLAYER_HP_MAX;
 	// game_state.player_energy = PLAYER_ENERGY_MAX;
 	// game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
@@ -93,6 +95,8 @@ int main()
 	enemy_sprite.load("assets/enemy-1.png", 16);
 
 
+	bool is_game_finished = false;
+
 	// ---------------------------------------
 	// MENU BUTTONS
 	Button menu_button_play({50.0f, 10.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
@@ -114,10 +118,18 @@ int main()
 
 		// case SceneType::GAME:
 
-			enemies_manager.update(flower);
+		if (!is_game_finished) {
+			auto frame_time = GetFrameTime();
+			frame_time *= 20;
+
+			enemies_manager.update(flower, game_state.phase, frame_time);
+
+			if (game_state.phase == 45) {
+				is_game_finished = true;
+			}
 
 			// regen. energy
-			flower.regen_energy();
+			flower.regen_energy(frame_time);
 			// timer_update(game_state.player_energy_timer, GetFrameTime());
 			// if (timer_is_finished(game_state.player_energy_timer))
 			// {
@@ -136,6 +148,7 @@ int main()
 				// game_state.player_energy -= PLAYER_ENERGY_COST;
 				enemies_manager.remove_clicked_enemies(GetMousePosition());
 			}
+		}
 
 		}
 
@@ -143,7 +156,7 @@ int main()
 		BeginDrawing();
 		ClearBackground(COLOR_GREEN);
 
-		flower.flower_draw(flower_sprite_sheet);
+		flower.flower_draw(flower_sprite_sheet, game_state.phase);
 		// flower_draw(flower_sprite_sheet);
 
 		enemies_manager.draw(enemy_sprite);
@@ -155,8 +168,20 @@ int main()
 		explosion_draw();
 		// TODO Make a Enemy class
 
+		enemies_manager.draw_phase(game_state.phase);
+
 		draw_fps();
 
+		if (is_game_finished) {
+			text_draw_aligned(
+				"BLOOOOOOOOM !", 
+				FontSize::HUGE_SIZE, 
+				COLOR_YELLOW, 
+				wr_rect_with_center_pos({50, 50}, 20, 10),
+				TextAlignment::AllCenter
+			);
+		}
+	
 		EndDrawing();
 	}
 	gui_deinit();

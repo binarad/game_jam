@@ -11,6 +11,7 @@
 #include <cstdlib>
 
 
+
 // ==================== RANDOM ====================
 
 int rand_i(int min, int max);
