@@ -65,7 +65,7 @@ void explosion_draw()
 
 int main()
 {
-    SetConfigFlags(FLAG_FULLSCREEN_MODE | FLAG_BORDERLESS_WINDOWED_MODE);
+	SetConfigFlags(FLAG_FULLSCREEN_MODE | FLAG_BORDERLESS_WINDOWED_MODE);
 	window_init();
 
 	gui_init();
@@ -97,15 +97,10 @@ int main()
 	// TODO: move inside enemy manager
 	enemy_sprite.load("assets/enemy-1.png", 16);
 
-
 	bool is_game_finished = false;
 	bool is_died = false;
 
-	// ---------------------------------------
-	// MENU BUTTONS
-	Button menu_button_play({50.0f, 10.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
-
-	// Button play_button(Rectangle{50.0f, 50.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
+	enemies_manager.load_enemy_textures();
 
 	while (!WindowShouldClose())
 	{
@@ -114,49 +109,52 @@ int main()
 		// === UPDATE ===
 
 		// switch (game_state.scene_type)
-		// case SceneType::MENU:
-		// 	ClearBackground(COLOR_GREEN);
-		// 	menu_button_play.draw();
-		// 	break;
+		{
+			// case SceneType::MENU:
+			// 	ClearBackground(COLOR_GREEN);
+			// 	menu_button_play.draw();
+			// 	break;
 
-		// case SceneType::GAME:
+			// case SceneType::GAME:
 
-		if (!is_game_finished && !is_died) {
-			auto frame_time = GetFrameTime();
-			frame_time *= 20;
-
-			enemies_manager.update(flower, game_state.phase, frame_time);
-
-			if (game_state.phase == 45) {
-				is_game_finished = true;
-			}
-
-			// regen. energy
-			flower.regen_energy(frame_time);
-			// timer_update(game_state.player_energy_timer, GetFrameTime());
-			// if (timer_is_finished(game_state.player_energy_timer))
-			// {
-			// 	game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
-
-			// 	if (game_state.player_energy < PLAYER_ENERGY_MAX)
-			// 	{
-			// 		game_state.player_energy += 1;
-			// 	}
-			// }
-
-			// if clicked and have energy for explosion
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && (flower.get_energy() >= flower.EXPLOSION_ENERGY_COST))
+			if (!is_game_finished && !is_died)
 			{
-				flower.decrease_energy();
-				// game_state.player_energy -= PLAYER_ENERGY_COST;
-				enemies_manager.remove_clicked_enemies(GetMousePosition());
-			}
+				auto frame_time = GetFrameTime();
+				// frame_time *= 20;
 
-			if (flower.get_hp() <= 0) {
+				enemies_manager.update(flower, game_state.phase, frame_time);
+
+				if (game_state.phase == 45)
+				{
+					is_game_finished = true;
+				}
+
+				// regen. energy
+				flower.regen_energy(frame_time);
+				// timer_update(game_state.player_energy_timer, GetFrameTime());
+				// if (timer_is_finished(game_state.player_energy_timer))
+				// {
+				// 	game_state.player_energy_timer = timer_start(PLAYER_ENERGY_REGEN_SPEED);
+
+				// 	if (game_state.player_energy < PLAYER_ENERGY_MAX)
+				// 	{
+				// 		game_state.player_energy += 1;
+				// 	}
+				// }
+
+				// if clicked and have energy for explosion
+				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && (flower.get_energy() >= flower.EXPLOSION_ENERGY_COST))
+				{
+					flower.decrease_energy();
+					// game_state.player_energy -= PLAYER_ENERGY_COST;
+					enemies_manager.remove_clicked_enemies(GetMousePosition());
+				}
+
+				if (flower.get_hp() <= 0) {
 				is_died = true;
 			}
+			}
 		}
-
 
 		// === DRAW ===
 		BeginDrawing();
@@ -178,11 +176,12 @@ int main()
 
 		draw_fps();
 
-		if (is_game_finished) {
+		if (is_game_finished)
+		{
 			text_draw_aligned(
-				"BLOOOOOOOOM !", 
-				FontSize::HUGE_SIZE, 
-				COLOR_YELLOW, 
+				"BLOOOOOOOOM !",
+				FontSize::HUGE_SIZE,
+				COLOR_YELLOW,
 				wr_rect_with_center_pos({50, 50}, 20, 10),
 				TextAlignment::AllCenter
 			);
@@ -202,9 +201,10 @@ int main()
 			}
 			restart_button.draw();
 		}
-	
+
 		EndDrawing();
 	}
+	enemies_manager.unload_enemy_textures();
 	gui_deinit();
 	window_deinit();
 

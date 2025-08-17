@@ -40,7 +40,7 @@ if(PLATFORM STREQUAL "Web")
     # Emscripten flags
     set_target_properties(${PROJECT_NAME} PROPERTIES
         SUFFIX ".html"
-        LINK_FLAGS "-s USE_GLFW=3 -s ASYNCIFY -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 -s ALLOW_MEMORY_GROWTH=1 -s EXPORTED_FUNCTIONS=['_main'] -s EXPORTED_RUNTIME_METHODS=['cwrap'] --preload-file \"${ASSETS_DIR}@/assets\" --preload-file \"${FONTS_DIR}@/fonts\""
+	LINK_FLAGS "-s USE_GLFW=3 -s ASYNCIFY -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 -s ALLOW_MEMORY_GROWTH=1 -s EXPORTED_FUNCTIONS=['_main'] -s EXPORTED_RUNTIME_METHODS=['cwrap'] --preload-file \"${ASSETS_DIR}@/assets\" --preload-file \"${FONTS_DIR}@/fonts\" --shell-file ${CMAKE_SOURCE_DIR}/build_web/shell_minimal.html"
     )
 
 #     set(CMAKE_EXECUTABLE_SUFFIX ".html")
