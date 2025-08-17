@@ -34,7 +34,7 @@ struct GameState
 
 void gamestate_init(GameState &game_state)
 {
-	game_state.scene_type = SceneType::MENU;
+	game_state.scene_type = SceneType::GAME;
 	game_state.phase = 1;
 }
 
@@ -42,7 +42,7 @@ Timer explosion_timer;
 
 void explosion_draw()
 {
-	DrawRing(GetMousePosition(), EXPLOSION_RADIUS, EXPLOSION_RADIUS + wr_y(0.3), 0, 360, 100, COLOR_YELLOW);
+	DrawRing(GetMousePosition(), EXPLOSION_RADIUS - wr_y(0.3), EXPLOSION_RADIUS, 0, 360, 100, COLOR_YELLOW);
 	// DrawCircleLines(GetMouseX(), GetMouseY(), EXPLOSION_RADIUS, COLOR_YELLOW);
 }
 

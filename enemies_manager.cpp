@@ -19,8 +19,8 @@ const float ENEMIES_DEFAULT_MOVE_SPEED = wr_y(2);
 
 const float ENEMIES_DEFAULT_SPAWN_TIMEOUT = 1.0;
 
-const float ENEMIES_SPAWN_MIN_RANGE = wr_y(40);
-const float ENEMIES_SPAWN_MAX_RANGE = wr_y(45);
+const float ENEMIES_SPAWN_MIN_RANGE = wr_y(35);
+const float ENEMIES_SPAWN_MAX_RANGE = wr_y(36);
 const Vector2 ENEMY_SIZE = {wr_x(3), wr_x(3)};
 
 const float ENEMIES_DAMAGE_SPEED = 1.0f;
