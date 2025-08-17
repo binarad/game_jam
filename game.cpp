@@ -34,7 +34,9 @@ void explosion_draw()
 
 int main()
 {
+#ifdef __EMSCIPTEN__
 	SetConfigFlags(FLAG_FULLSCREEN_MODE | FLAG_BORDERLESS_WINDOWED_MODE);
+#endif
 	window_init();
 	InitAudioDevice();
 	gui_init();
@@ -54,47 +56,47 @@ int main()
 	SpriteSheet flower_sprite_sheet;
 	flower_sprite_sheet.load("assets/flower_sprite_sheet.png", 16);
 
-	SpriteSheet enemy_sprite;
-	// TODO: move inside enemy manager
-	enemy_sprite.load("assets/enemy-1.png", 16);
-
 	bool is_game_finished = false;
 	bool is_died = false;
 
 	enemies_manager.load_enemy_textures();
 
-	Music backgroun_music = LoadMusicStream("assets/background_music.mp3");
-	backgroun_music.looping = true;
-	SetMusicVolume(backgroun_music, 0.35f);
-	PlayMusicStream(backgroun_music);
+	Music background_music = LoadMusicStream("assets/background_music.wav");
+	background_music.looping = true;
+	SetMusicVolume(background_music, 0.25f);
+	PlayMusicStream(background_music);
 
 	Sound game_over = LoadSound("assets/game_over.mp3");
 	Sound fail_trumpet = LoadSound("assets/fail-trumpet.mp3");
+	bool played_game_over = false;
+	bool played_fail_trumpet = false;
 
 	Sound win_sound = LoadSound("assets/win1.mp3");
 	Sound click_sound = LoadSound("assets/on_enemy_click_sound.mp3");
 
+#ifdef __EMSCRIPTEN__
+	bool audioStarted = false;
+#endif
 	while (!WindowShouldClose())
 	{
 
-		UpdateMusicStream(backgroun_music);
-		// BeginDrawing();
-		// === UPDATE ===
-
-		// switch (game_state.scene_type)
+#ifdef __EMSCRIPTEN__
+		if (!audioStarted && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
-			// case SceneType::MENU:
-			// 	ClearBackground(COLOR_GREEN);
-			// 	menu_button_play.draw();
-			// 	break;
+			PlayMusicStream(background_music);
+			audioStarted = true;
+		}
+#endif
 
-			// case SceneType::GAME:
+		UpdateMusicStream(background_music);
+
+		// === UPDATE ===
+		{
 
 			if (!is_game_finished && !is_died)
 			{
 				auto frame_time = GetFrameTime();
 				// frame_time *= 20;
-
 				enemies_manager.update(flower, game_state.phase, frame_time);
 
 				if (game_state.phase == 45)
@@ -138,7 +140,7 @@ int main()
 
 		if (is_game_finished)
 		{
-			StopMusicStream(backgroun_music);
+			StopMusicStream(background_music);
 			PlaySound(win_sound);
 			ClearBackground(COLOR_GREEN);
 			text_draw_aligned(
@@ -150,10 +152,20 @@ int main()
 		}
 		else if (is_died)
 		{
-			StopMusicStream(backgroun_music);
-			PlaySound(game_over);
-			if (!IsSoundPlaying(game_over))
+			StopMusicStream(background_music);
+
+			if (!played_game_over)
+			{
+				PlaySound(game_over);
+				played_game_over = true;
+			}
+
+			// When game_over is done, play fail_trumpet
+			if (played_game_over && !IsSoundPlaying(game_over) && !played_fail_trumpet)
+			{
 				PlaySound(fail_trumpet);
+				played_fail_trumpet = true;
+			}
 
 			Button restart_button(
 				{50, 40, 20, 10},
@@ -163,10 +175,13 @@ int main()
 			if (restart_button.mouse_click(GetMousePosition()))
 			{
 				is_died = false;
+				played_game_over = false;
+				played_fail_trumpet = false;
 
 				gamestate_init(game_state);
 				flower.init();
 				enemies_manager.init();
+				PlayMusicStream(background_music);
 			}
 			restart_button.draw();
 		}
