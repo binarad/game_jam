@@ -60,7 +60,9 @@ void explosion_draw()
 
 int main()
 {
+    SetConfigFlags(FLAG_FULLSCREEN_MODE | FLAG_BORDERLESS_WINDOWED_MODE);
 	window_init();
+
 	gui_init();
 
 	// init game state
@@ -92,6 +94,7 @@ int main()
 	// TODO: move inside enemy manager
 	enemy_sprite.load("assets/enemy-1.png", 16);
 
+
 	// ---------------------------------------
 	bool close_window = false;
 	// Button play_button(Rectangle{50.0f, 50.0f, 20.0f, 10.0f}, COLOR_YELLOW, COLOR_GREEN, "PLAY");
@@ -101,7 +104,7 @@ int main()
 
 		// === UPDATE ===
 		{
-			enemies_manager.update();
+			enemies_manager.update(flower);
 
 			// regen. energy
 			flower.regen_energy();
@@ -124,8 +127,6 @@ int main()
 				enemies_manager.remove_clicked_enemies(GetMousePosition());
 			}
 
-			// if enemies collides with flower, deal damage to flower?
-			enemies_manager.damage_flower(flower);
 		}
 
 		// === DRAW ===

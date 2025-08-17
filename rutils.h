@@ -65,8 +65,10 @@ void rect_move_towards_pos(Rectangle &rect, Vector2 target_pos, float px_per_sec
 
 // ==================== WINDOW ====================
 
-constexpr float WINDOW_WIDTH = 1600.0f;
-constexpr float WINDOW_HEIGHT = 900.0f;
+constexpr float WINDOW_WIDTH = 1920.0f;
+constexpr float WINDOW_HEIGHT = 1080.0f;
+// constexpr float WINDOW_WIDTH = 1600.0f;
+// constexpr float WINDOW_HEIGHT = 900.0f;
 constexpr Vector2 WINDOW_CENTER = {WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f};
 constexpr int TARGET_FPS = 400;
 

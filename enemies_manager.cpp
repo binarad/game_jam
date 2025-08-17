@@ -41,7 +41,7 @@ void EnemiesManager::stop()
     // DO WE NEED THIS ?
 }
 
-void EnemiesManager::update()
+void EnemiesManager::update(Flower &flower)
 {
     auto frame_time = GetFrameTime();
 
@@ -72,8 +72,7 @@ void EnemiesManager::update()
         rect_move_towards_pos(enemy_rect, wr_vec2({50, 50}), m_move_speed, frame_time);
     }
 
-
-
+    _damage_flower(flower);
 }
 
 void EnemiesManager::draw(SpriteSheet &enemy_sprite)
@@ -101,24 +100,23 @@ void EnemiesManager::remove_clicked_enemies(Vector2 mouse_pos)
     }
 }
 
-void EnemiesManager::damage_flower(Flower &flower)
+void EnemiesManager::_damage_flower(Flower &flower)
 {
-    return;
+
+    timer_update(m_damage_timer, GetFrameTime());
+
+    // cant attack until timer finished
+    if (timer_is_in_progress(m_damage_timer)) {
+        return;
+    }
+
     for (auto enemy : m_list)
     {
-        // TODO: Add timer to this func
-        timer_update(m_damage_timer, GetFrameTime());
-
-        if(CheckCollisionRecs(enemy, flower.flower_bounds))
+        if (CheckCollisionRecs(enemy, flower.flower_bounds))
         {
-            // std::cout << "TIMER IS IN PROGRESS: " << timer_is_in_progress(m_damage_timer) << std::endl;
-            if (timer_is_finished(m_damage_timer))
-            {
-                timer_restart(m_damage_timer);
-                
-                flower.set_hp(flower.get_hp() - 10.0f);
-                // std::cout << "Damage applied. FLOWER HP: " << flower.get_hp() << std::endl;
-            }   
+            timer_restart(m_damage_timer);
+            flower.set_hp(flower.get_hp() - 10.0f);
+            // std::cout << "Damage applied. FLOWER HP: " << flower.get_hp() << std::endl;
 
             break;
         }
